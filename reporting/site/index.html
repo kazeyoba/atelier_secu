@@ -86,7 +86,29 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#protection-cors">Protection CORS</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#headers">Headers</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#securisation-contre-les-bots-crowdsec">Sécurisation contre les bots : Crowdsec</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-crowdsec">Installation CrowdSec</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-du-bouncer">Installation du Bouncer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-du-bouncer-niveau-apache">Installation du Bouncer - niveau Apache</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-du-bouncer-niveau-wordpress">Installation du Bouncer - niveau Wordpress</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#securisation-waf">Sécurisation : WAF</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#audit-securite">Audit sécurité</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#nikto">Nikto</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#wpscan">WPScan</a>
     </li>
         </ul>
     </li>
@@ -117,13 +139,13 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="procedure-installation-securisation-site-wordpress-poc">Procédure installation &amp; sécurisation site Wordpress [POC]</h1>
-<p>Cette documentation abordera de comment installer un site Wordpress de façon sécuriser pour un contexte de production.</p>
+<p>Cette documentation traite de l'installation d'un site Wordpress de façon sécurisée pour un contexte de production.</p>
 <h2 id="reseaux">Réseaux</h2>
 <h3 id="topologie">Topologie</h3>
 <p><img alt="topologie" src="img/topologie.png" /></p>
-<p>Les entreprises disposant d’un site Web public que les clients utilisent doivent rendre leur serveur Web accessible à Internet. Pour protéger le réseau local de l’entreprise, le serveur Web est installé sur un serveur distinct des ressources internes. La DMZ permet la communication entre les ressources commerciales protégées, telles que les bases de données internes, et le trafic qualifié d’Internet.</p>
-<p>Un réseau DMZ sert de tampon entre Internet et le réseau privé d’une entreprise. La DMZ est isolée par une passerelle de sécurité, telle qu’un pare-feu, qui filtre le trafic entre la DMZ et un réseau LAN. Le serveur DMZ par défaut est protégé par une autre passerelle de sécurité qui filtre le trafic provenant de réseaux externes.</p>
-<p>Nous utiliseront une machine virtuelle qui utilisera <a href="https://opnsense.org/">opnsense</a> comme OS. Qui sera office de routeur firewall. Le compartiment des différents réseaux utilisera des switchs virtuels. </p>
+<p>Les entreprises disposant d’un site Web public utilisé par leurs clients doivent rendre leur serveur Web accessible à Internet. Pour protéger le réseau local de l’entreprise, le serveur Web est installé sur un serveur distinct des ressources internes. La DMZ permet la communication entre les ressources commerciales protégées, telles que les bases de données internes, et le trafic qualifié d’Internet.</p>
+<p>Un réseau DMZ sert de tampon entre Internet et le réseau privé d’une entreprise. La DMZ est isolée par une passerelle de sécurité, telle qu’un pare-feu, qui filtre le trafic entre la DMZ et un réseau LAN. Le serveur de la DMZ est protégé par une autre passerelle de sécurité qui filtre le trafic provenant de réseaux externes.</p>
+<p>Nous utiliserons une machine virtuelle qui fonctionnera sous <a href="https://opnsense.org/">opnsense</a> comme système d'exploitation. Elle fera office de routeur firewall. Le compartiment des différents réseaux se fera à l'aide des switchs virtuels. </p>
 <h3 id="matrice-de-flux-et-acl">Matrice de flux et ACL</h3>
 <table>
 <thead>
@@ -164,7 +186,7 @@
 <li>La règle par défaut est  <code>deny deny</code></li>
 </ul>
 <blockquote>
-<p>Nous detailleronts pas la configuration d'ACL sur l'opnsense.</p>
+<p>Nous détaillerons pas la configuration d'ACL sur l'opnsense.</p>
 </blockquote>
 <h3 id="nat">NAT</h3>
 <p>Sur l'interface WAN il faudra créer la règle NAT de port forwarding suivante: </p>
@@ -203,7 +225,7 @@
 <li><strong>@LAN_IP_WEB</strong> : Correspond à l'IP lan du serveur WEB. </li>
 </ul>
 <blockquote>
-<p>Nous detailleronts pas la configuration de règles NAT de port forwarding sur l'opnsense.</p>
+<p>Nous détaillerons pas la configuration de règles NAT de port forwarding sur l'opnsense.</p>
 </blockquote>
 <h2 id="back-end">Back end</h2>
 <h3 id="update">Update</h3>
@@ -251,17 +273,17 @@ EXIT;
 </code></pre>
 <h3 id="installation-basique-de-wordpress">Installation basique de Wordpress</h3>
 <h4 id="installation-apache">Installation Apache</h4>
-<p>Nous commencerons par le serveur web Apache.</p>
+<p>Nous commencerons par l'installation du serveur web Apache.</p>
 <p>Pour installer le serveur web Apache, exécutez la commande suivante :</p>
 <pre><code class="language-bash">sudo apt install apache2 -y
 </code></pre>
 <p>Puis on active le service:</p>
 <pre><code class="language-bash">sudo systemctl enable apache2 &amp;&amp; sudo systemctl start apache2
 </code></pre>
-<p>Vérification que le sevice fonctionne:</p>
+<p>Vérifions que le sevice fonctionne:</p>
 <pre><code class="language-bash">sudo systemctl status apache2
 </code></pre>
-<p>La sortie de commande:</p>
+<p>La sortie de commande ressemble à cela:</p>
 <pre><code class="language-bash">root@host:~# sudo systemctl status apache2
 ● apache2.service - The Apache HTTP Server
      Loaded: loaded (/lib/systemd/system/apache2.service; enabled; preset: enabled)
@@ -342,13 +364,306 @@ sudo a2ensite wordpress.conf
 </code></pre>
 <pre><code class="language-apache2">systemctl reload apache2
 </code></pre>
+<p>Depuis le navigateur:
+<img alt="wordpress" src="img/wordpress.png" /></p>
 <h3 id="securisation-avec-un-certificat-https">Sécurisation avec un certificat HTTPS</h3>
+<p>Avant de pouvoir utiliser des certificats SSL, nous devons d'abord activer mod_ssl, un module Apache qui prend en charge le cryptage SSL.</p>
+<p>Activez mod_ssl avec la commande a2enmod :</p>
+<pre><code class="language-bash">sudo a2enmod ssl
+</code></pre>
+<pre><code class="language-bash">sudo systemctl restart apache2
+</code></pre>
+<p>Le module mod_ssl est maintenant activé et prêt à être utilisé.</p>
+<p>Maintenant qu'Apache est prêt à utiliser le cryptage, nous pouvons passer à la génération d'un nouveau certificat SSL. Le certificat stockera quelques informations de base sur votre site, et sera accompagné d'un fichier clé qui permet au serveur de traiter en toute sécurité des données cryptées.</p>
+<p>Nous pouvons créer les fichiers de clé et de certificat SSL à l'aide de la commande openssl :</p>
+<pre><code class="language-bash">sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+</code></pre>
+<p>La liste complète des invites se présente comme suit :</p>
+<pre><code class="language-bash">Country Name (2 letter code) [XX]:FR
+State or Province Name (full name) []:
+Locality Name (eg, city) [Default City]: Nantes 
+Organization Name (eg, company) [Default Company Ltd]:EPSI
+Organizational Unit Name (eg, section) []:ASRBD
+Common Name (eg, your name or your server's hostname) []:wordpress.kaze-cloud-secu.local
+Email Address []:webmaster@example.com
+</code></pre>
+<p>Les deux fichiers que vous avez créés seront placés dans les sous-répertoires appropriés de /etc/ssl.</p>
+<p>Ensuite, nous allons mettre à jour notre configuration Apache pour utiliser le nouveau certificat et la nouvelle clé.</p>
+<p>Editer le fichier: <code>/etc/apache2/sites-available/wordpress.conf</code></p>
+<p>Ajouter le bloc suivant:</p>
+<pre><code>&lt;VirtualHost *:443&gt;
+    ServerName wordpress.kaze-cloud-secu.local
+    DocumentRoot /var/www/html/wordpress
+
+    &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+    &lt;/Directory&gt;
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+&lt;/VirtualHost&gt;
+</code></pre>
+<p>La configuration finale:</p>
+<pre><code class="language-bash">&lt;VirtualHost *:80&gt;
+    ServerName wordpress.kaze-cloud-secu.local
+
+    Redirect permanent / https://wordpress.kaze-cloud-secu.local/
+
+&lt;/VirtualHost&gt;
+
+
+&lt;VirtualHost *:443&gt;
+   ServerName wordpress.kaze-cloud-secu.local
+   DocumentRoot /var/www/html/wordpress
+
+    &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+    &lt;/Directory&gt;
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+&lt;/VirtualHost&gt;
+</code></pre>
 <h3 id="protection-hst">Protection HST</h3>
+<p>HTTP Strict Transport Security, plus connu sous le sigle HSTS est un mécanisme qui demande au client (le navigateur) de remplacer tous les liens non sécurisés par des liens sécurisés. Ce mécanisme permet donc de s'assurer que seules des requêtes HTTPS seront utilisées au cours de la navigation sur le site, quels que soient les liens contenus dans la page Web. Ce mécanisme peut également s'appliquer aux sous-domaines si l'on précise la directive includeSubDomains dans la configuration. Ainsi, les sous domaines seront eux aussi affichés en HTTPS.</p>
+<p>Pour activer le protocole HSTS sur Apache dans les en-têtes de trames, le plus simple est de modifier la configuration du serveur Apache. Ainsi, si le serveur héberge plusieurs sites, tous bénéficieront de cette directive. Pour cela, il convient d'éditer le fichier /etc/apache2/conf-available/security.conf pour ajouter la ligne ci-dessous :</p>
+<pre><code>Header always set Strict-Transport-Security &quot;max-age=31536000; includeSubDomains; preload&quot;
+</code></pre>
+<p>Sinon au niveau de la configuration du <code>wordpress.conf</code>:</p>
+<pre><code>&lt;VirtualHost *:443&gt;
+   ServerName wordpress.kaze-cloud-secu.local
+   DocumentRoot /var/www/html/wordpress
+
+   &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+   &lt;/Directory&gt;
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+
+   Header always set Strict-Transport-Security &quot;max-age=63072000; includeSubDomains&quot;
+&lt;/VirtualHost&gt;
+</code></pre>
+<blockquote>
+<p><strong>Important</strong> : Le site doit avoir un certificat SSL. Avant de faire la manipulation</p>
+</blockquote>
+<p>Relancer le service Apache2.</p>
+<p>Verification:
+<img alt="hst" src="img/hst.png" /></p>
 <h3 id="protection-cors">Protection CORS</h3>
+<p>Le Cross-Origin Resource Sharing ou CORS est un mécanisme qui permet à des ressources restreintes d'une page web d'être récupérées par un autre domaine extérieur au domaine à partir duquel la première ressource a été servie.</p>
+<p>Voici comment activer CORS sur Apache</p>
+<p>Vous aurez besoin d'activer les en-têtes module pour activer CORS sur Apache sur Debian, ouvrez un terminal de commande et lancez la commande suivante pour activer les en-têtes module.</p>
+<pre><code class="language-bash">sudo a2enmod headers
+</code></pre>
+<p>Si vous souhaitez activer CORS pour un domaine de site Web (par exemple, example.com), spécifiez ce domaine à la place du caractère générique <code>*</code>.</p>
+<pre><code class="language-bash">Header add Access-Control-Allow-Origin &quot;example.com&quot;;
+</code></pre>
+<p>Configuration du <code>wordpress.conf</code>:</p>
+<pre><code>&lt;VirtualHost *:443&gt;
+   ServerName wordpress.kaze-cloud-secu.local
+   DocumentRoot /var/www/html/wordpress
+
+   &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+   &lt;/Directory&gt;
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+
+   Header add Access-Control-Allow-Origin &quot;wordpress.kaze-cloud-secu.local&quot;
+   Header always set Strict-Transport-Security &quot;max-age=63072000; includeSubDomains&quot;
+&lt;/VirtualHost&gt;
+</code></pre>
+<p><img alt="cors" src="img/cors.png" /></p>
+<h3 id="headers">Headers</h3>
+<pre><code>   Header add Access-Control-Allow-Origin &quot;wordpress.kaze-cloud-secu.local&quot;
+   Header always set Strict-Transport-Security &quot;max-age=63072000; includeSubDomains&quot;
+   Header set X-XSS-Protection &quot;1; mode=block&quot;
+   Header append X-FRAME-OPTIONS &quot;DENY&quot;
+</code></pre>
 <h3 id="securisation-contre-les-bots-crowdsec">Sécurisation contre les bots : Crowdsec</h3>
-<pre><code class="language-bash"></code></pre>
-<pre><code class="language-bash"></code></pre>
-<pre><code class="language-bash"></code></pre>
+<p>L’outil CrowdSec est une sorte de Fail2Ban moderne et communautaire. L’idée est de pouvoir protéger efficacement ses services Web, mais également de prévenir les autres utilisateurs des adresses IP malveillantes, des attaques en cours… et cela de manière automatisée, afin de mettre en place des contre-mesures efficaces rapidement !</p>
+<p><img alt="schemas" src="https://static.cachem.fr/uploads/2022/06/swag-crowdsec-ecosystem-fr.png" /></p>
+<p>Les « Bouncers » sont là pour appliquer les actions (décisions) des scénarios. Il s’installe par exemple sur la machine qui sert de reverse proxy et/ou sur le routeur. Ils peuvent consulter les décisions (via l’API locale) et appliquer une contre-mesure (Bannissement de l’IP, mise en place d’un captcha, etc.) directement sur la machine.</p>
+<h4 id="installation-crowdsec">Installation CrowdSec</h4>
+<p>Sur Debian 12, CrowdSec est directement dans les dépôts, ce qui va nous faciliter la vie. Il suffit de mettre à jour le cache des paquets et de lancer l'installation :</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install -y crowdsec
+</code></pre>
+<p>Vérification de l'installation</p>
+<pre><code class="language-bash">cscli collections list
+</code></pre>
+<p>Sortie:</p>
+<pre><code class="language-bash">COLLECTIONS
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Name                                📦 Status   Version   Local Path
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ crowdsecurity/apache2               ✔️ enabled   0.1       /etc/crowdsec/collections/apache2.yaml
+ crowdsecurity/base-http-scenarios   ✔️ enabled   0.6       /etc/crowdsec/collections/base-http-scenarios.yaml
+ crowdsecurity/http-cve              ✔️ enabled   1.9       /etc/crowdsec/collections/http-cve.yaml
+ crowdsecurity/linux                 ✔️ enabled   0.2       /etc/crowdsec/collections/linux.yaml
+ crowdsecurity/nginx                 ✔️ enabled   0.2       /etc/crowdsec/collections/nginx.yaml
+ crowdsecurity/sshd                  ✔️ enabled   0.2       /etc/crowdsec/collections/sshd.yaml
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</code></pre>
+<p>Si la collection "base-http-scenarios" est présente dans la liste, ce qui normalement le cas si vous avez déjà installé Apache sur votre serveur, cela va notamment permettre de bloquer les mauvais User Agents, comme ceux utilisés par certains outils de scans. Ceci n'est qu'un exemple, car cette collection va détecter d'autres événements comme la recherche de backdoors, etc.
+On peut regarder si nous avons des décisions actives au niveau de notre instance CrowdSec. En toute logique, non. Vérifions que ce soit bien le cas avec la commande ci-dessous issue de "cscli", l'ensemble de commandes associées à CrowdSec.</p>
+<h5 id="verification-du-moteur-crowdsec-avec-nikto">Vérification du moteur Crowdsec avec Nikto</h5>
+<p>Nikto est un scanner de vulnérabilité en ligne de commande logiciel gratuit qui analyse les serveurs Web à la recherche de fichiers/CGI dangereux, de logiciels serveur obsolètes et d'autres problèmes.</p>
+<p>Avant d'exécuter le scan Nikto, vous pouvez vérifier que votre machine Kali Linux parvient à charger la page d'accueil de votre site :</p>
+<pre><code class="language-bash">curl -I wordpress.kaze-cloud-secu.local
+</code></pre>
+<p>Si vous obtenez un résultat avec un code de retour HTTP égal à <strong>200</strong>, c'est tout bon ! Maintenant, on va lancer un scan de notre serveur Web avec Nikto. Pour cela, on spécifie l'adresse IP de l'hôte cible ou le nom de domaine, et on laisse tourner. Comme ceci :</p>
+<pre><code class="language-bash">nikto -h wordpress.kaze-cloud-secu.local
+</code></pre>
+<p>Sortie:</p>
+<pre><code class="language-bash">┌──(cloud㉿kali)-[~]
+└─$ nikto -h wordpress.kaze-cloud-secu.local
+- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          10.10.100.35
++ Target Hostname:    wordpress.kaze-cloud-secu.local
++ Target Port:        80
++ Start Time:         2024-04-09 08:41:57 (GMT0)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.57 (Debian)
++ /: The anti-clickjacking X-Frame-Options header is not present. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
++ /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ Root page / redirects to: https://wordpress.kaze-cloud-secu.local/
++ No CGI Directories found (use '-C all' to force check all possible dirs)
+</code></pre>
+<p>Suite au scan avec Nikto, mon adresse IP est bien dans le viseur de CrowdSec puisqu'il a décidé de bannir mon adresse IP. Cependant, l'adresse IP n'est pas bloquée. En effet, CrowdSec doit s'appuyer sur un Bouncer pour appliquer la décision et bannir l'adresse IP.</p>
+<h4 id="installation-du-bouncer">Installation du Bouncer</h4>
+<h5 id="installation-de-php-composer">Installation de PHP Composer</h5>
+<p>Pour déployer le Bouncer PHP sur son serveur, il faut installer Composer sinon il ne s'installera pas correctement. Pour l'installer, nous avons besoin de deux paquets : php-cli et unzip, que l'on va installer sans plus attendre :</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install php-cli unzip
+</code></pre>
+<p>Ensuite, il faut se positionner dans son répertoire racine et récupérer l'installeur avec Curl :</p>
+<pre><code class="language-bash">cd ~
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+</code></pre>
+<p>Enfin, lancez l'installation de Composer :</p>
+<pre><code class="language-bash">sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+</code></pre>
+<p>Sortie:</p>
+<pre><code class="language-bash">root@wordpress:/root# sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+All settings correct for using Composer
+Downloading...
+
+Composer (version 2.7.2) successfully installed to: /usr/local/bin/composer
+Use it: php /usr/local/bin/composer
+
+root@wordpress:/root#
+</code></pre>
+<h4 id="installation-du-bouncer-niveau-apache">Installation du Bouncer - niveau Apache</h4>
+<p>Nous avons besoin de Git pour installer ce Bouncer afin de cloner le projet. Pour installer Git :</p>
+<pre><code class="language-bash">sudo apt-get install git
+</code></pre>
+<p>Ensuite, on récupère le projet en le clonant en local :</p>
+<pre><code class="language-bash">git clone https://github.com/crowdsecurity/cs-php-bouncer.git
+</code></pre>
+<p>On obtient un dossier nommé "cs-php-bouncer" dans lequel on va se positionner :</p>
+<pre><code class="language-bash">cd cs-php-bouncer/
+</code></pre>
+<pre><code class="language-bash">sudo mkdir -p /var/www/crowdsec-standalone-bouncer
+</code></pre>
+<pre><code class="language-bash">sudo chown -R $(whoami):$(whoami) /var/www/crowdsec-standalone-bouncer
+</code></pre>
+<pre><code class="language-bash">composer create-project crowdsec/standalone-bouncer /var/www/crowdsec-standalone-bouncer --keep-vcs
+</code></pre>
+<pre><code class="language-bash">sudo chown -R www-data /var/www/crowdsec-standalone-bouncer
+sudo chmod g+w /var/www/crowdsec-standalone-bouncer
+</code></pre>
+<p>Générer une clé API:</p>
+<pre><code class="language-bash">sudo cscli bouncers add standalone-bouncer
+</code></pre>
+<p>Puis modifier le fichier de configuration:</p>
+<pre><code class="language-bash">cp /var/www/crowdsec-standalone-bouncer/scripts/settings.php.dist /var/www/crowdsec-standalone-bouncer/scripts/settings.php
+</code></pre>
+<pre><code class="language-bash">nano /var/www/crowdsec-standalone-bouncer/scripts/settings.php
+</code></pre>
+<p>Au niveau de <code>YOUR_BOUNCER_API_KEY</code>, entrer la clé API.</p>
+<p>Ajouter dans le bloc <code>wordpress.conf</code>:</p>
+<pre><code>&lt;VirtualHost *:443&gt;
+   ServerName wordpress.kaze-cloud-secu.local
+   DocumentRoot /var/www/html/wordpress
+
+   &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+   &lt;/Directory&gt;
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+
+   Header add Access-Control-Allow-Origin &quot;wordpress.kaze-cloud-secu.local&quot;
+   Header always set Strict-Transport-Security &quot;max-age=63072000; includeSubDomains&quot;
+   Header set X-XSS-Protection &quot;1; mode=block&quot;
+
+   php_value auto_prepend_file &quot;/var/www/crowdsec-standalone-bouncer/scripts/bounce.php&quot;
+&lt;/VirtualHost&gt;
+</code></pre>
+<blockquote>
+<p>Refaire un scanne avec nikto et vous devriez avoir un code 403. Et au niveau de votre navigateur une 403.</p>
+</blockquote>
+<h4 id="installation-du-bouncer-niveau-wordpress">Installation du Bouncer - niveau Wordpress</h4>
+<p>À partir de l'interface d'administration de WordPress, cliquez sur le lien "Ajouter" du menu "Extensions".
+<img alt="plugins" src="https://www.it-connect.fr/wp-content-itc/uploads/2021/12/tuto-crowdsec-wordpress-02.png" /></p>
+<p>Grâce à la zone de recherche, vous pouvez trouver facilement l'extension "CrowdSec". Ensuite, il suffit de cliquer sur le bouton "Installer maintenant".
+<img alt="plugins" src="https://www.it-connect.fr/wp-content-itc/uploads/2021/12/tuto-crowdsec-wordpress-03.png" /></p>
+<p>Dans la foulée de l'installation, cliquez sur le bouton "Activer" pour activer l'extension. Cela n'aura pas d'impact sur votre site, car il faut lier le Bouncer CrowdSec à notre instance locale CrowdSec pour que cela fonctionne.
+<img alt="plugins" src="https://www.it-connect.fr/wp-content-itc/uploads/2021/12/tuto-crowdsec-wordpress-04.png" /></p>
+<p>Ensuite, retournez sur WordPress et cliquez à gauche sur "CrowdSec" dans le menu afin d'accéder à la configuration de l'extension. Il va falloir renseigner plusieurs options :</p>
+<ul>
+<li>API URL : indiquez "http://localhost:8080", car CrowdSec est installé sur le même serveur que WordPress.</li>
+<li>Bouncer API Key : collez la clé d'API générée précédemment</li>
+<li>Bouncing level : en mode "Normal bouncing", CrowdSec va bannir ou présenter le Captcha aux clients malveillants selon la configuration, tandis qu'en mode - "Flex bouncing", le blocage sera toujours effectué via un Captcha. Enfin, le mode "Bouncing disabled" permet à CrowdSec d'être transparent donc il ne - bloquera plus personne, y compris les pirates. Prenons le mode "Normal bouncing" pour le moment.</li>
+<li>Public website only : désactivez cette option afin de protéger la partie publique du site, mais aussi l'espace d'administration (wp-admin). Si cette option est active, CrowdSec protège seulement la partie publique du site (front office).
+Validez en cliquant sur le bouton "Enregistrer les modifications".</li>
+</ul>
+<h3 id="securisation-waf">Sécurisation : WAF</h3>
+<p>1: Allez dans Plugins &gt; Ajouter.
+<img alt="1" src="img/1.png" /></p>
+<p>2: Une fois l'installation terminée, cliquez sur Activer pour activer le plugin sur votre site.
+<img alt="wordfence" src="img/wordfence.png" /></p>
+<p>3:Entrer une clé de licence (que l'on peut générer gratuitement via notre adresse mail).
+<img alt="register" src="img/register.png" /></p>
+<p>4: Le plug in est maintenant actif, il ne reste plus qu'à le configurer selon nos besoins.
+<img alt="scan" src="img/scan.png" /></p>
+<h2 id="audit-securite">Audit sécurité</h2>
+<h3 id="nikto">Nikto</h3>
+<p>Nikto est un scanner de vulnérabilité en ligne de commande gratuit qui analyse les serveurs Web à la recherche de fichiers/CGI dangereux, de logiciels serveur obsolètes et d'autres problèmes de configurations. Il effectue des vérifications génériques et spécifiques au type de serveur.</p>
+<pre><code class="language-bash">nikto -C all -h wordpress.kaze-cloud-secu.local
+</code></pre>
+<p>Sortie:</p>
+<pre><code>- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          10.10.100.35
++ Target Hostname:    wordpress.kaze-cloud-secu.local
++ Target Port:        80
++ Start Time:         2024-04-09 10:19:58 (GMT0)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.57 (Debian)
++ /: The anti-clickjacking X-Frame-Options header is not present. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
++ /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ Root page / redirects to: https://wordpress.kaze-cloud-secu.local/
++ 26584 requests: 0 error(s) and 2 item(s) reported on remote host
++ End Time:           2024-04-09 10:21:04 (GMT0) (66 seconds)
+---------------------------------------------------------------------------
+</code></pre>
+<h3 id="wpscan">WPScan</h3>
+<p>WP scan est un scanner de vulnérabilités pour WordPress. Il est développé en Ruby. Il est capable de lister les plugins utilisés et vous donner les failles de sécurité associées. Il intègre aussi un module de brute-force pour s’attaquer à l’interface d’administration de WordPress.</p>
+<pre><code class="language-bash">wpscan --disable-tls-checks --url wordpress.kaze-cloud-secu.local --enumerate
+</code></pre>
+<blockquote>
+<p>Les scannes tombent, car CrowdSec ou Wordfence détecte qu'on fait des requêtes anormaux et agressives. </p>
+</blockquote>
               
             </div>
           </div><footer>
@@ -392,5 +707,5 @@ sudo a2ensite wordpress.conf
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2024-04-09 07:27:25.938584+00:00
+Build Date UTC : 2024-04-09 10:36:25.306348+00:00
 -->
