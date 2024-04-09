@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Procédure installation & sécurisation site Wordpress [POC]</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Proc\u00e9dure installation \u0026 s\u00e9curisation site Wordpress [POC]";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> Procédure installation & sécurisation site Wordpress [POC]
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Procédure installation & sécurisation site Wordpress [POC]</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#reseaux">Réseaux</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#topologie">Topologie</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#matrice-de-flux-et-acl">Matrice de flux et ACL</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#nat">NAT</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#back-end">Back end</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#update">Update</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#installation-base-de-donnees">Installation base de données</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#post-installation">Post installation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#creation-un-utilisateur-base-de-donnees-limiter">Création un utilisateur base de données limiter</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#fron-end">Fron end</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#update_1">Update</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#installation-basique-de-wordpress">Installation basique de Wordpress</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-apache">Installation Apache</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#installation-php82">Installation PHP8.2</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#telechargement-wordpress">Téléchargement Wordpress</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#creation-du-vhost-apache">Création du VHOST Apache</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#securisation-avec-un-certificat-https">Sécurisation avec un certificat HTTPS</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#protection-hst">Protection HST</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#protection-cors">Protection CORS</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#securisation-contre-les-bots-crowdsec">Sécurisation contre les bots : Crowdsec</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Procédure installation & sécurisation site Wordpress [POC]</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Procédure installation & sécurisation site Wordpress [POC]</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="procedure-installation-securisation-site-wordpress-poc">Procédure installation &amp; sécurisation site Wordpress [POC]</h1>
+<p>Cette documentation abordera de comment installer un site Wordpress de façon sécuriser pour un contexte de production.</p>
+<h2 id="reseaux">Réseaux</h2>
+<h3 id="topologie">Topologie</h3>
+<p><img alt="topologie" src="img/topologie.png" /></p>
+<p>Les entreprises disposant d’un site Web public que les clients utilisent doivent rendre leur serveur Web accessible à Internet. Pour protéger le réseau local de l’entreprise, le serveur Web est installé sur un serveur distinct des ressources internes. La DMZ permet la communication entre les ressources commerciales protégées, telles que les bases de données internes, et le trafic qualifié d’Internet.</p>
+<p>Un réseau DMZ sert de tampon entre Internet et le réseau privé d’une entreprise. La DMZ est isolée par une passerelle de sécurité, telle qu’un pare-feu, qui filtre le trafic entre la DMZ et un réseau LAN. Le serveur DMZ par défaut est protégé par une autre passerelle de sécurité qui filtre le trafic provenant de réseaux externes.</p>
+<p>Nous utiliseront une machine virtuelle qui utilisera <a href="https://opnsense.org/">opnsense</a> comme OS. Qui sera office de routeur firewall. Le compartiment des différents réseaux utilisera des switchs virtuels. </p>
+<h3 id="matrice-de-flux-et-acl">Matrice de flux et ACL</h3>
+<table>
+<thead>
+<tr>
+<th>Source/Destination</th>
+<th>Serveur Web</th>
+<th>Serveur de BDD</th>
+<th>WAN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serveur Web</td>
+<td>-</td>
+<td>- permit</td>
+<td>- permit</td>
+</tr>
+<tr>
+<td>Serveur de BDD</td>
+<td>- deny</td>
+<td>-</td>
+<td>- deny</td>
+</tr>
+<tr>
+<td>WAN</td>
+<td>- permit</td>
+<td>- deny</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>Dans cette matrice :</p>
+<ul>
+<li>La connexion entre le serveur web et le serveur de base de données est autorisée.</li>
+<li>Le WAN peut accéder au serveur web, mais l'accès au serveur de base de données est refusé.</li>
+<li>Les tirets (-) indiquent les cases où aucun flux n'est autorisé ou refusé. Cela peut être interprété comme "aucune règle spécifique définie".</li>
+<li>Les données peuvent circuler de manière bidirectionnelle entre les sources et les destinations</li>
+<li>La règle par défaut est  <code>deny deny</code></li>
+</ul>
+<blockquote>
+<p>Nous detailleronts pas la configuration d'ACL sur l'opnsense.</p>
+</blockquote>
+<h3 id="nat">NAT</h3>
+<p>Sur l'interface WAN il faudra créer la règle NAT de port forwarding suivante: </p>
+<table>
+<thead>
+<tr>
+<th>DESTINATION IP</th>
+<th>FROM IP</th>
+<th>PORT</th>
+<th>FORWARD IP</th>
+<th>FORWARD PORT</th>
+<th>PROTOCOL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@WAN_IP</td>
+<td>ANY</td>
+<td>80</td>
+<td>@LAN_IP_WEB</td>
+<td>80</td>
+<td>TCP</td>
+</tr>
+<tr>
+<td>@WAN_IP</td>
+<td>ANY</td>
+<td>443</td>
+<td>@LAN_IP_WEB</td>
+<td>443</td>
+<td>TCP</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>@WAN_IP</strong> : Correspond à l'IP WAN de l'interface du routeur firewall</li>
+<li><strong>@LAN_IP_WEB</strong> : Correspond à l'IP lan du serveur WEB. </li>
+</ul>
+<blockquote>
+<p>Nous detailleronts pas la configuration de règles NAT de port forwarding sur l'opnsense.</p>
+</blockquote>
+<h2 id="back-end">Back end</h2>
+<h3 id="update">Update</h3>
+<pre><code class="language-bash">sudo apt update
+</code></pre>
+<pre><code class="language-bash">sudo apt full-upgrade -y
+</code></pre>
+<pre><code class="language-bash">reboot
+</code></pre>
+<h3 id="installation-base-de-donnees">Installation base de données</h3>
+<p>Vous pouvez installer MariaDB à l'aide de la commande suivante :</p>
+<pre><code class="language-bash">apt install mariadb-server mariadb-client
+</code></pre>
+<p>Démarrez le démon du serveur de base de données et activez-le pour qu'il démarre automatiquement au prochain démarrage à l'aide des commandes suivantes :</p>
+<pre><code class="language-bash">systemctl start mariadb
+systemctl enable mariadb
+</code></pre>
+<h3 id="post-installation">Post installation</h3>
+<p>Une fois le serveur de base de données installé, exécutez la commande suivante pour sécuriser votre serveur MariaDB:</p>
+<pre><code class="language-bash">mysql_secure_installation
+</code></pre>
+<p>Plusieurs questions de configuration vous seront alors posées, auxquelles vous devrez répondre Y à chacune d'entre elles.</p>
+<pre><code class="language-bash">Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]:  Y
+Reload privilege tables now? [Y/n]:  Y
+</code></pre>
+<p>Relancer le service mariadb:</p>
+<pre><code class="language-bash">systemctl restart mariadb
+</code></pre>
+<h3 id="creation-un-utilisateur-base-de-donnees-limiter">Création un utilisateur base de données limiter</h3>
+<pre><code class="language-bash">CREATE USER 'wordpress'@'192.168.0.1' IDENTIFIED BY 'CHANGEME';
+CREATE DATABASE wordpress;
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'192.168.0.1';
+FLUSH PRIVILEGES;
+EXIT;
+</code></pre>
+<h2 id="fron-end">Fron end</h2>
+<h3 id="update_1">Update</h3>
+<pre><code class="language-bash">sudo apt update
+</code></pre>
+<pre><code class="language-bash">sudo apt full-upgrade -y
+</code></pre>
+<pre><code class="language-bash">reboot
+</code></pre>
+<h3 id="installation-basique-de-wordpress">Installation basique de Wordpress</h3>
+<h4 id="installation-apache">Installation Apache</h4>
+<p>Nous commencerons par le serveur web Apache.</p>
+<p>Pour installer le serveur web Apache, exécutez la commande suivante :</p>
+<pre><code class="language-bash">sudo apt install apache2 -y
+</code></pre>
+<p>Puis on active le service:</p>
+<pre><code class="language-bash">sudo systemctl enable apache2 &amp;&amp; sudo systemctl start apache2
+</code></pre>
+<p>Vérification que le sevice fonctionne:</p>
+<pre><code class="language-bash">sudo systemctl status apache2
+</code></pre>
+<p>La sortie de commande:</p>
+<pre><code class="language-bash">root@host:~# sudo systemctl status apache2
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2024-04-08 20:58:30 UTC; 13s ago
+       Docs: https://httpd.apache.org/docs/2.4/
+   Main PID: 2011 (apache2)
+      Tasks: 55 (limit: 4652)
+     Memory: 17.1M
+        CPU: 141ms
+     CGroup: /system.slice/apache2.service
+             ├─2011 /usr/sbin/apache2 -k start
+             ├─2012 /usr/sbin/apache2 -k start
+             └─2013 /usr/sbin/apache2 -k start
+
+Apr 08 20:58:30 wordpress systemd[1]: Starting apache2.service - The Apache HTTP Server...
+Apr 08 20:58:30 wordpress systemd[1]: Started apache2.service - The Apache HTTP Server.
+</code></pre>
+<h4 id="installation-php82">Installation PHP8.2</h4>
+<p>Ensuite, nous allons installer PHP. PHP8.2 est activé par défaut dans le dépôt Debian 12, donc pour installer PHP8.2 avec les extensions, exécutez les commandes suivantes :</p>
+<pre><code class="language-bash">sudo apt-get install php8.2 php8.2-cli php8.2-common php8.2-imap php8.2-redis php8.2-snmp php8.2-xml php8.2-mysqli php8.2-zip php8.2-mbstring php8.2-curl libapache2-mod-php -y
+</code></pre>
+<p>Pour vérifier la version de PHP installée, exécutez la commande suivante :</p>
+<pre><code class="language-bash">php -v
+</code></pre>
+<p>Vous devriez obtenir le résultat suivant :</p>
+<pre><code class="language-bash">PHP 8.2.7 (cli) (built: Jun  9 2023 19:37:27) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.2.7, Copyright (c) Zend Technologies
+    with Zend OPcache v8.2.7, Copyright (c), by Zend Technologies
+</code></pre>
+<h4 id="telechargement-wordpress">Téléchargement Wordpress</h4>
+<p>Avant d'installer WordPress, nous devons d'abord le télécharger dans la racine par défaut du document Apache :</p>
+<pre><code class="language-bash">cd /var/www/html
+wget https://wordpress.org/latest.zi
+unzip latest.zip
+rm latest.zip
+</code></pre>
+<p>Définir les bonnes autorisations pour les fichiers et les dossiers.</p>
+<pre><code class="language-bash">chown -R www-data:www-data wordpress/
+cd wordpress/
+find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 644 {} \;
+</code></pre>
+<p>Maintenant, ouvrez le fichier wp-config.php avec votre éditeur préféré et entrez les informations d'identification de la base de données que vous avez créées à l'étape précédente.</p>
+<pre><code class="language-bash">mv wp-config-sample.php wp-config.php
+nano wp-config.php
+</code></pre>
+<p>Il devrait ressembler à ceci :</p>
+<pre><code class="language-wp-config.php">// ** Database settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define( 'DB_NAME', 'wordpress' );
+/** Database username */
+define( 'DB_USER', 'wordpress' );
+/** Database password */
+define( 'DB_PASSWORD', 'YourStrongPasswordHere' );
+</code></pre>
+<h4 id="creation-du-vhost-apache">Création du VHOST Apache</h4>
+<pre><code class="language-bash">cd /etc/apache2/sites-available/
+touch wordpress.conf
+</code></pre>
+<p>Contenu</p>
+<pre><code>&lt;VirtualHost *:80&gt;
+    ServerName wordpress.kaze-cloud-secu.local
+    DocumentRoot /var/www/html/wordpress
+
+    &lt;Directory /var/www/html/wordpress&gt;
+        AllowOverride All
+    &lt;/Directory&gt;
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+&lt;/VirtualHost&gt;
+</code></pre>
+<p>Activez la configuration Apache pour WordPress et réécrivez le module.</p>
+<pre><code class="language-bash">sudo a2enmod rewrite
+sudo a2ensite wordpress.conf
+</code></pre>
+<pre><code class="language-apache2">systemctl reload apache2
+</code></pre>
+<h3 id="securisation-avec-un-certificat-https">Sécurisation avec un certificat HTTPS</h3>
+<h3 id="protection-hst">Protection HST</h3>
+<h3 id="protection-cors">Protection CORS</h3>
+<h3 id="securisation-contre-les-bots-crowdsec">Sécurisation contre les bots : Crowdsec</h3>
+<pre><code class="language-bash"></code></pre>
+<pre><code class="language-bash"></code></pre>
+<pre><code class="language-bash"></code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.5.3
+Build Date UTC : 2024-04-09 07:27:25.938584+00:00
+-->
