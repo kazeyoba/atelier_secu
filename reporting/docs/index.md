@@ -615,7 +615,7 @@ Ensuite, retournez sur WordPress et cliquez à gauche sur "CrowdSec" dans le men
 - Public website only : désactivez cette option afin de protéger la partie publique du site, mais aussi l'espace d'administration (wp-admin). Si cette option est active, CrowdSec protège seulement la partie publique du site (front office).
 Validez en cliquant sur le bouton "Enregistrer les modifications".
 
-### Sécurisation : WAF
+### Sécurisation : WAF plugin Wordpress
 
 1: Allez dans Plugins > Ajouter.
 ![1](img/1.png)
@@ -628,6 +628,42 @@ Validez en cliquant sur le bouton "Enregistrer les modifications".
 
 4: Le plug in est maintenant actif, il ne reste plus qu'à le configurer selon nos besoins.
 ![scan](img/scan.png)
+
+### Sécurisation: Apache mod_security
+
+```bash
+apt-get install libapache-mod-security
+```
+Le répertoire /etc/modsecurity est alors créé avec une configuration par défaut qu'il faut renommer pour qu'elle soit effective :
+```bash
+cd /etc/modsecurity
+mv modsecurity.conf-recommended modsecurity.conf
+```
+
+Dans le fichier `/etc/modsecurity/modsecurity.conf`
+
+Par défaut, on voit que la valeur SecRuleEngine est positionnée sur `Detection Only`, on passe cette valeur à `On`.
+
+On va activer les règles:
+```
+mkdir /etc/modsecurity/activated_rules
+ln -s /usr/share/modsecurity-crs/base_rules/* /etc/modsecurity/activated_rules
+cp /usr/share/modsecurity-crs/modsecurity_crs_10_setup.conf /etc/modsecurity
+```
+
+Puis on demande au module mod-security d'Apache d'inclure ces fichiers :
+```bash
+nano /etc/apache2/mods-enabled/mod-security.conf
+```
+
+Ajout de la ligne:
+```
+Include "/etc/modsecurity/activated_rules/*.conf"
+```
+
+```bash
+service apache2 reload
+```
 
 ## Audit sécurité
 

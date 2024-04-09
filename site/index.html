@@ -100,7 +100,9 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#securisation-waf">Sécurisation : WAF</a>
+    <li class="toctree-l3"><a class="reference internal" href="#securisation-waf-plugin-wordpress">Sécurisation : WAF plugin Wordpress</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#securisation-apache-mod_security">Sécurisation: Apache mod_security</a>
     </li>
         </ul>
     </li>
@@ -627,7 +629,7 @@ sudo chmod g+w /var/www/crowdsec-standalone-bouncer
 <li>Public website only : désactivez cette option afin de protéger la partie publique du site, mais aussi l'espace d'administration (wp-admin). Si cette option est active, CrowdSec protège seulement la partie publique du site (front office).
 Validez en cliquant sur le bouton "Enregistrer les modifications".</li>
 </ul>
-<h3 id="securisation-waf">Sécurisation : WAF</h3>
+<h3 id="securisation-waf-plugin-wordpress">Sécurisation : WAF plugin Wordpress</h3>
 <p>1: Allez dans Plugins &gt; Ajouter.
 <img alt="1" src="img/1.png" /></p>
 <p>2: Une fois l'installation terminée, cliquez sur Activer pour activer le plugin sur votre site.
@@ -636,6 +638,28 @@ Validez en cliquant sur le bouton "Enregistrer les modifications".</li>
 <img alt="register" src="img/register.png" /></p>
 <p>4: Le plug in est maintenant actif, il ne reste plus qu'à le configurer selon nos besoins.
 <img alt="scan" src="img/scan.png" /></p>
+<h3 id="securisation-apache-mod_security">Sécurisation: Apache mod_security</h3>
+<pre><code class="language-bash">apt-get install libapache-mod-security
+</code></pre>
+<p>Le répertoire /etc/modsecurity est alors créé avec une configuration par défaut qu'il faut renommer pour qu'elle soit effective :</p>
+<pre><code class="language-bash">cd /etc/modsecurity
+mv modsecurity.conf-recommended modsecurity.conf
+</code></pre>
+<p>Dans le fichier <code>/etc/modsecurity/modsecurity.conf</code></p>
+<p>Par défaut, on voit que la valeur SecRuleEngine est positionnée sur <code>Detection Only</code>, on passe cette valeur à <code>On</code>.</p>
+<p>On va activer les règles:</p>
+<pre><code>mkdir /etc/modsecurity/activated_rules
+ln -s /usr/share/modsecurity-crs/base_rules/* /etc/modsecurity/activated_rules
+cp /usr/share/modsecurity-crs/modsecurity_crs_10_setup.conf /etc/modsecurity
+</code></pre>
+<p>Puis on demande au module mod-security d'Apache d'inclure ces fichiers :</p>
+<pre><code class="language-bash">nano /etc/apache2/mods-enabled/mod-security.conf
+</code></pre>
+<p>Ajout de la ligne:</p>
+<pre><code>Include &quot;/etc/modsecurity/activated_rules/*.conf&quot;
+</code></pre>
+<pre><code class="language-bash">service apache2 reload
+</code></pre>
 <h2 id="audit-securite">Audit sécurité</h2>
 <h3 id="nikto">Nikto</h3>
 <p>Nikto est un scanner de vulnérabilité en ligne de commande gratuit qui analyse les serveurs Web à la recherche de fichiers/CGI dangereux, de logiciels serveur obsolètes et d'autres problèmes de configurations. Il effectue des vérifications génériques et spécifiques au type de serveur.</p>
@@ -707,5 +731,5 @@ Validez en cliquant sur le bouton "Enregistrer les modifications".</li>
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2024-04-09 10:36:25.306348+00:00
+Build Date UTC : 2024-04-09 10:57:11.138106+00:00
 -->
