@@ -1,0 +1,7 @@
+site_name: Procédure installation & sécurisation site Wordpress [POC]
+
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  local: fr
